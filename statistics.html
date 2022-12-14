@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<div class="panel panel1" id="panel">....<i class="fa fa-circle"></i></div>
+
+<head>
+  <h1>Statistics</h1>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="/public/css/statistics.css">
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css" />
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $.ajax({
+        type: 'GET',
+        ContentType: "application/json; charset=utf-8",
+        dataType: "json",
+        url: "/statistics/getPublicViewStatistics",
+        success: function (data) {
+          console.log('data', data);
+          var t = $('#myTable').DataTable({
+            "aaData": data,
+            "destroy": true,
+            "stateSave": true,
+            "pageLength": 5,
+            "ordering": false,
+            "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, 'All']],
+            columnDefs: [
+              {
+                targets: "_all",
+                className: 'dt-center',
+                "createdCell": function (td, cellData, rowData, row, col) {
+                  $(td).css('padding', '10px')
+                },
+              },
+            ],
+            "columns": [
+              { "data": "final_diagnosis" },
+              { "data": "COUNT(final_diagnosis)" },
+              { "data": "hgncapproved_genesymbol" },
+            ]
+          })
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+          console.log('error', textStatus);
+        }
+      })
+    })
+  </script>
+  
+    <table class="center" id="myTable" width="80%">
+      <tr>
+        <thead>
+          <th>Final diagnosis</th>
+          <th>Number of affected individuals</th>
+          <th>HGNC gene </th>
+        </thead>
+      </tr>
+    </table>
+  
+</body>
+
+</html>
